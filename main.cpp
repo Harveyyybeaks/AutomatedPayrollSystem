@@ -4,38 +4,19 @@ using namespace std;
 
 const int MAX = 100;
 
-struct Employee {
-    int id;
-    string name, department, position, status, contact;
-    double rate;
-    bool isMonthly;
-};
-
-struct Attendance {
-    int daysWorked;
-    double regularHours, overtimeHours;
-    int absences;
-    int lateMinutes;
-    double undertimeHours;
-};
-
-struct Allowance {
-    double transport, meal, incentive, others;
-};
-
-struct Deduction {
-    double tax, sss, philhealth, pagibig, loans, cashAdvance, others;
-};
-
-struct Payroll {
-    double gross, totalDeduction, totalAllowance, net;
-};
-
-Employee emp[MAX];
-Attendance att[MAX];
-Allowance allw[MAX];
-Deduction ded[MAX];
-Payroll pay[MAX];
+int emp_id[MAX];
+string emp_name[MAX], emp_department[MAX], emp_position[MAX], emp_status[MAX], emp_contact[MAX];
+double emp_rate[MAX];
+bool emp_isMonthly[MAX];
+int att_daysWorked[MAX];
+double att_regularHours[MAX], att_overtimeHours[MAX];
+int att_absences[MAX];
+int att_lateMinutes[MAX];
+double att_undertimeHours[MAX];
+double allw_transport[MAX], allw_meal[MAX], allw_incentive[MAX], allw_others[MAX];
+double ded_tax[MAX], ded_sss[MAX], ded_philhealth[MAX], ded_pagibig[MAX];
+double ded_loans[MAX], ded_cashAdvance[MAX], ded_others[MAX];
+double pay_gross[MAX], pay_totalDeduction[MAX], pay_totalAllowance[MAX], pay_net[MAX];
 
 int empCount = 0;
 
@@ -48,106 +29,131 @@ void addEmployee() {
     if (empCount >= MAX) return;
 
     cout << "\nEnter Employee ID: ";
-    cin >> emp[empCount].id;
+    cin >> emp_id[empCount];
     
     for (int i = 0; i < empCount; i++) {
-        if (emp[i].id == emp[empCount].id) {
+        if (emp_id[i] == emp_id[empCount]) {
             cout << "Duplicate ID!\n";
             return;
         }
     }
     cin.ignore();
+    
+    bool isValid;
+    do {
+    isValid = true;
     cout << "Full Name: ";
-    getline(cin, emp[empCount].name);
+    if (cin.peek() == '\n') cin.ignore(); 
+    getline(cin, emp_name[empCount]);
+    
+    for (char c : emp_name[empCount]) {
+        if (isdigit(c)) {
+            isValid = false;
+            break;
+        }
+    }
+    if (!isValid || emp_name[empCount].empty()) {
+        cout << "Invalid name! Names cannot contain numbers or be empty.\n";
+        isValid = false; 
+    }
+} 
+    while (!isValid);
 
     cout << "Department: ";
-    getline(cin, emp[empCount].department);
+    getline(cin, emp_department[empCount]);
 
     cout << "Position: ";
-    getline(cin, emp[empCount].position);
+    getline(cin, emp_position[empCount]);
 
-    cout << "Status (Active/Inactive): ";
-    getline(cin, emp[empCount].status);
+    cout << "Status: ";
+    getline(cin, emp_status[empCount]);
 
     cout << "Contact: ";
-    getline(cin, emp[empCount].contact);
+    getline(cin, emp_contact[empCount]);
 
     cout << "Rate: ";
-    cin >> emp[empCount].rate;
-
+    cin >> emp_rate[empCount];
+    
     cout << "1-Monthly / 0-Daily: ";
-    cin >> emp[empCount].isMonthly;
 
+    while (!(cin >> emp_isMonthly[empCount]) || (emp_isMonthly[empCount] != 0 && emp_isMonthly[empCount] != 1)) {
+       cout << "Invalid input!\n"; 
+       cout << "Please enter 1 for Monthly or 0 for Daily: ";
+       cin.clear();
+       cin.ignore(1000, '\n');
+       emp_isMonthly[empCount] = -1;
+       }
+          
     empCount++;
     cout << "Employee added!\n";
 }
 void inputAttendance(int i) {
-    cout << "\nDays Worked: "; cin >> att[i].daysWorked;
-    cout << "Regular Hours: "; cin >> att[i].regularHours;
-    cout << "Overtime Hours: "; cin >> att[i].overtimeHours;
-    cout << "Absences: "; cin >> att[i].absences;
-    cout << "Late Minutes: "; cin >> att[i].lateMinutes;
-    cout << "Undertime Hours: "; cin >> att[i].undertimeHours;
+    cout << "\nDays Worked: "; cin >> att_daysWorked[i];
+    cout << "Regular Hours: "; cin >> att_regularHours[i];
+    cout << "Overtime Hours: "; cin >> att_overtimeHours[i];
+    cout << "Absences: "; cin >> att_absences[i];
+    cout << "Late Minutes: "; cin >> att_lateMinutes[i];
+    cout << "Undertime Hours: "; cin >> att_undertimeHours[i];
 }
 void inputAllowance(int i) {
-    cout << "\nTransport: "; cin >> allw[i].transport;
-    cout << "Meal: "; cin >> allw[i].meal;
-    cout << "Incentive: "; cin >> allw[i].incentive;
-    cout << "Others: "; cin >> allw[i].others;
+    cout << "\nTransport: "; cin >> allw_transport[i];
+    cout << "Meal: "; cin >> allw_meal[i];
+    cout << "Incentive: "; cin >> allw_incentive[i];
+    cout << "Others: "; cin >> allw_others[i];
 }
 void computeDeductions(int i) {
-    double basic = pay[i].gross;
+    double basic = pay_gross[i];
 
-    ded[i].sss = basic * 0.045;
-    ded[i].philhealth = basic * 0.02;
-    ded[i].pagibig = 100;
+    ded_sss[i] = basic * 0.045;
+    ded_philhealth[i] = basic * 0.02;
+    ded_pagibig[i] = 100;
 
-    ded[i].tax = computeTax(basic);
+    ded_tax[i] = computeTax(basic);
 
-    cout << "Loans: "; cin >> ded[i].loans;
-    cout << "Cash Advance: "; cin >> ded[i].cashAdvance;
-    cout << "Other deductions: "; cin >> ded[i].others;
+    cout << "Loans: "; cin >> ded_loans[i];
+    cout << "Cash Advance: "; cin >> ded_cashAdvance[i];
+    cout << "Other deductions: "; cin >> ded_others[i];
 
-    if (ded[i].loans < 0 || ded[i].cashAdvance < 0) {
+    if (ded_loans[i] < 0 || ded_cashAdvance[i] < 0) {
         cout << "Invalid deduction!\n";
-        ded[i].loans = ded[i].cashAdvance = 0;
+        ded_loans[i] = ded_cashAdvance[i] = 0;
     }
 }
 void computePayroll(int i) {
     double basic;
 
-    if (emp[i].isMonthly)
-        basic = emp[i].rate;
+    if (emp_isMonthly[i])
+        basic = emp_rate[i];
     else
-        basic = emp[i].rate * att[i].daysWorked;
+        basic = emp_rate[i] * att_daysWorked[i];
 
-    double overtimePay = att[i].overtimeHours * (emp[i].rate / 8) * 1.25;
+    double overtimePay = att_overtimeHours[i] * (emp_rate[i] / 8) * 1.25;
 
-    double lateDeduction = (att[i].lateMinutes / 60.0) * (emp[i].rate / 8);
-    double undertimeDeduction = att[i].undertimeHours * (emp[i].rate / 8);
+    double lateDeduction = (att_lateMinutes[i] / 60.0) * (emp_rate[i] / 8);
+    double undertimeDeduction = att_undertimeHours[i] * (emp_rate[i] / 8);
 
-    pay[i].gross = basic + overtimePay;
+    pay_gross[i] = basic + overtimePay;
 
-    pay[i].totalAllowance = allw[i].transport + allw[i].meal +
-                            allw[i].incentive + allw[i].others;
+    pay_totalAllowance[i] = allw_transport[i] + allw_meal[i] +
+                            allw_incentive[i] + allw_others[i];
 
     computeDeductions(i);
 
-    pay[i].totalDeduction =
-        ded[i].tax + ded[i].sss + ded[i].philhealth +
-        ded[i].pagibig + ded[i].loans + ded[i].cashAdvance +
-        ded[i].others + lateDeduction + undertimeDeduction;
+    pay_totalDeduction[i] =
+        ded_tax[i] + ded_sss[i] + ded_philhealth[i] +
+        ded_pagibig[i] + ded_loans[i] + ded_cashAdvance[i] +
+        ded_others[i] + lateDeduction + undertimeDeduction;
 
-    pay[i].net = pay[i].gross + pay[i].totalAllowance - pay[i].totalDeduction;
+    pay_net[i] = pay_gross[i] + pay_totalAllowance[i] - pay_totalDeduction[i];
 }
 void payslip(int i) {
     cout << "\n===== PAYSLIP =====\n";
-    cout << "Name: " << emp[i].name << endl;
-    cout << "Department: " << emp[i].department << endl;
-    cout << "Gross Pay: " << pay[i].gross << endl;
-    cout << "Allowances: " << pay[i].totalAllowance << endl;
-    cout << "Deductions: " << pay[i].totalDeduction << endl;
-    cout << "Net Pay: " << pay[i].net << endl;
+    cout << "Name: " << emp_name[i] << endl;
+    cout << "Department: " << emp_department[i] << endl;
+    cout << "Gross Pay: " << pay_gross[i] << endl;
+    cout << "Allowances: " << pay_totalAllowance[i] << endl;
+    cout << "Deductions: " << pay_totalDeduction[i] << endl;
+    cout << "Net Pay: " << pay_net[i] << endl;
 }
 void searchEmployee() {
     int id;
@@ -155,8 +161,8 @@ void searchEmployee() {
     cin >> id;
 
     for (int i = 0; i < empCount; i++) {
-        if (emp[i].id == id) {
-            cout << "Found: " << emp[i].name << endl;
+        if (emp_id[i] == id) {
+            cout << "Found: " << emp_name[i] << endl;
             payslip(i);
             return;
         }
@@ -167,11 +173,10 @@ void dashboard() {
     double totalGross = 0, totalDed = 0, totalNet = 0;
 
     for (int i = 0; i < empCount; i++) {
-        totalGross += pay[i].gross;
-        totalDed += pay[i].totalDeduction;
-        totalNet += pay[i].net;
+        totalGross += pay_gross[i];
+        totalDed += pay_totalDeduction[i];
+        totalNet += pay_net[i];
     }
-
     cout << "\n===== DASHBOARD =====\n";
     cout << "Total Employees: " << empCount << endl;
     cout << "Total Gross: " << totalGross << endl;
@@ -189,7 +194,16 @@ int main() {
         cout << "4. Dashboard\n";
         cout << "0. Exit\n";
         cout << "Choice: ";
-        cin >> choice;
+        
+        if (!(cin >> choice)){
+           cin.clear();
+           cin.ignore(1000, '\n');
+           choice = -1;
+        }
+        
+        if (choice == 0) {
+           break;
+        }
 
         switch(choice) {
         case 1:
@@ -197,7 +211,7 @@ int main() {
             break;
         case 2:
             for (int i = 0; i < empCount; i++) {
-                cout << "\nProcessing: " << emp[i].name << endl;
+                cout << "\nProcessing: " << emp_name[i] << endl;
                 inputAttendance(i);
                 inputAllowance(i);
                 computePayroll(i);
@@ -210,10 +224,12 @@ int main() {
         case 4:
             dashboard();
             break;
+        default:
+           cout << "Invalid input!\n";
         }
-    } while(choice != 0);
-
+    } 
+       while (choice != 0);
+          cout << "Thank you for using our system!\n";
+          
     return 0;
 }
-            
-
