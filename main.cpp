@@ -6,9 +6,9 @@ using namespace std;
 const int MAX = 100;
 
 int emp_id[MAX];
-string emp_name[MAX], emp_department[MAX], emp_position[MAX], emp_status[MAX], emp_contact[MAX];
+string emp_name[MAX], emp_department[MAX], emp_position[MAX], emp_status[MAX], emp_contact[MAX], emp_isMonthlyDaily1[MAX], emp_id1[MAX];
 double emp_rate[MAX];
-bool emp_isMonthly[MAX];
+bool emp_isMonthlyDaily[MAX];
 int att_daysWorked[MAX];
 double att_regularHours[MAX], att_overtimeHours[MAX];
 int att_absences[MAX];
@@ -29,14 +29,33 @@ double computeTax(double salary) {
 void addEmployee() {
     if (empCount >= MAX) return;
 
-    cout << "\nEnter Employee ID: ";
-    cin >> emp_id[empCount];
+    while (true) {
+        cout << "\nEnter Employee ID: ";
+        cin >> emp_id1[empCount];
+        
+    bool pureNumber = all_of(emp_id1[empCount].begin(), emp_id1[empCount].end(), ::isdigit);
+       if (pureNumber) {
 
-    for (int i = 0; i < empCount; i++) {
-        if (emp_id[i] == emp_id[empCount]) {
-            cout << "Duplicate ID!\n";
-            return;
-        }
+           emp_id[empCount] = stoi(emp_id1[empCount]);
+
+           bool duplicate = false;
+
+           for (int i = 0; i < empCount; i++) {
+                if (emp_id[i] == emp_id[empCount]) {
+                    duplicate = true;
+                    break;
+               }
+           }
+           if (duplicate) {
+                cout << "Duplicate ID!\n";
+           }
+           else {
+               break;
+           }
+       }
+       else {
+           cout << "Invalid Input! Please enter only numbers.\n";
+       }
     }
     cin.ignore();
     cout << "Full Name: ";
@@ -57,8 +76,21 @@ void addEmployee() {
     cout << "Rate: ";
     cin >> emp_rate[empCount];
 
-    cout << "1-Monthly / 0-Daily: ";
-    cin >> emp_isMonthly[empCount];     
+    while (true) {
+        cout << "1-Monthly / 0-Daily: ";
+        cin >> emp_isMonthlyDaily1[empCount]; 
+        
+        if (emp_isMonthlyDaily1[empCount] == "1" || emp_isMonthlyDaily1[empCount] == "0") {
+            break;
+        }
+        else {
+            cout << "Invalid Input! Please enter only '1' for Monthly or '0' for Daily.\n";
+        }
+        }
+    bool isPureNumber = all_of(emp_isMonthlyDaily1[empCount].begin(), emp_isMonthlyDaily1[empCount].end(), ::isdigit);
+    if (isPureNumber) {
+        emp_isMonthlyDaily[empCount] = stoi(emp_isMonthlyDaily1[empCount]);
+    }
     
     empCount++;
     cout << "Employee added!\n";
@@ -98,7 +130,7 @@ void computeDeductions(int i) {
 void computePayroll(int i) {
     double basic;
 
-    if (emp_isMonthly[i])
+    if (emp_isMonthlyDaily[i])
         basic = emp_rate[i];
     else
         basic = emp_rate[i] * att_daysWorked[i];
