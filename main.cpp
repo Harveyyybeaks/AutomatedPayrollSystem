@@ -6,7 +6,7 @@ using namespace std;
 const int MAX = 100;
 
 int emp_id[MAX];
-string emp_name[MAX], emp_department[MAX], emp_position[MAX], emp_status[MAX], emp_contact[MAX], emp_isMonthlyDaily1[MAX], emp_id1[MAX];
+string emp_name[MAX], emp_department[MAX], emp_position[MAX], emp_status[MAX], emp_contact[MAX], emp_isMonthlyDaily1, emp_id1, rateInput;
 double emp_rate[MAX];
 bool emp_isMonthlyDaily[MAX];
 int att_daysWorked[MAX];
@@ -26,17 +26,22 @@ double computeTax(double salary) {
     else if (salary <= 33333) return (salary - 20833) * 0.20;
     else return 2500 + (salary - 33333) * 0.25;
 }
+bool isValidText (string text) {
+    return all_of(text.begin(), text.end(), [](char c) {return isalpha(c) || isspace(c);});
+}
+bool isPureNumber (string text) {
+    return all_of(text.begin(), text.end(), ::isdigit);
+}
 void addEmployee() {
     if (empCount >= MAX) return;
 
     while (true) {
         cout << "\nEnter Employee ID: ";
-        cin >> emp_id1[empCount];
+        cin >> emp_id1;
         
-    bool pureNumber = all_of(emp_id1[empCount].begin(), emp_id1[empCount].end(), ::isdigit);
-       if (pureNumber) {
+       if (isPureNumber) {
 
-           emp_id[empCount] = stoi(emp_id1[empCount]);
+           emp_id[empCount] = stoi(emp_id1);
 
            bool duplicate = false;
 
@@ -58,38 +63,84 @@ void addEmployee() {
        }
     }
     cin.ignore();
-    cout << "Full Name: ";
-    getline(cin, emp_name[empCount]);
+    
+    while (true) {
+        cout << "Full Name: ";
+        getline(cin, emp_name[empCount]);
+        
+        if (isValidText && !emp_name[empCount].empty()) {
+            break;
+        }
+        else {
+            cout << "Invalid Input!\n";
+        }
+    }
+    
+    while (true) {
+        cout << "Department: ";
+        getline(cin, emp_department[empCount]);
+        
+        if (isValidText && !emp_department[empCount].empty()) {
+            break;
+        }
+        else {
+            cout << "Invalid Input!\n";
+        }
+    }
+    while (true) {
+        cout << "Position: ";
+        getline(cin, emp_position[empCount]);
+        
+        if (isValidText && !emp_position[empCount].empty()) {
+            break;
+        }
+        else {
+            cout << "Invalid Input!\n";
+        }
+    }
 
-    cout << "Department: ";
-    getline(cin, emp_department[empCount]);
-
-    cout << "Position: ";
-    getline(cin, emp_position[empCount]);
-
-    cout << "Status: ";
-    getline(cin, emp_status[empCount]);
+    while (true) {
+        cout << "Status: ";
+        getline(cin, emp_status[empCount]);
+        
+        if (isValidText && !emp_status[empCount].empty()) {
+            break;
+        }
+        else {
+            cout << "Invalid Input!\n";
+        }
+    }
 
     cout << "Contact: ";
     getline(cin, emp_contact[empCount]);
 
-    cout << "Rate: ";
-    cin >> emp_rate[empCount];
+    while (true) {
+        cout << "Rate: ";
+        cin >> rateInput;
+        
+        bool validRate = all_of(rateInput.begin(), rateInput.end(), [](char c) {return isdigit(c) || c == '.';});
+        if (validRate) {
+            emp_rate[empCount] = stod(rateInput);
+            break;
+        }
+        else {
+            cout << "Invalid Input!\n";
+        }
+    }
 
     while (true) {
         cout << "1-Monthly / 0-Daily: ";
-        cin >> emp_isMonthlyDaily1[empCount]; 
+        cin >> emp_isMonthlyDaily1; 
         
-        if (emp_isMonthlyDaily1[empCount] == "1" || emp_isMonthlyDaily1[empCount] == "0") {
+        if (emp_isMonthlyDaily1 == "1" || emp_isMonthlyDaily1 == "0") {
             break;
         }
         else {
             cout << "Invalid Input! Please enter only '1' for Monthly or '0' for Daily.\n";
         }
         }
-    bool isPureNumber = all_of(emp_isMonthlyDaily1[empCount].begin(), emp_isMonthlyDaily1[empCount].end(), ::isdigit);
     if (isPureNumber) {
-        emp_isMonthlyDaily[empCount] = stoi(emp_isMonthlyDaily1[empCount]);
+        emp_isMonthlyDaily[empCount] = stoi(emp_isMonthlyDaily1);
     }
     
     empCount++;
