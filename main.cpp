@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <algorithm>
 using namespace std;
 
 const int MAX = 100;
@@ -30,7 +31,7 @@ void addEmployee() {
 
     cout << "\nEnter Employee ID: ";
     cin >> emp_id[empCount];
-    
+
     for (int i = 0; i < empCount; i++) {
         if (emp_id[i] == emp_id[empCount]) {
             cout << "Duplicate ID!\n";
@@ -38,26 +39,8 @@ void addEmployee() {
         }
     }
     cin.ignore();
-    
-    bool isValid;
-    do {
-    isValid = true;
     cout << "Full Name: ";
-    if (cin.peek() == '\n') cin.ignore(); 
     getline(cin, emp_name[empCount]);
-    
-    for (char c : emp_name[empCount]) {
-        if (isdigit(c)) {
-            isValid = false;
-            break;
-        }
-    }
-    if (!isValid || emp_name[empCount].empty()) {
-        cout << "Invalid name! Names cannot contain numbers or be empty.\n";
-        isValid = false; 
-    }
-} 
-    while (!isValid);
 
     cout << "Department: ";
     getline(cin, emp_department[empCount]);
@@ -73,17 +56,10 @@ void addEmployee() {
 
     cout << "Rate: ";
     cin >> emp_rate[empCount];
-    
-    cout << "1-Monthly / 0-Daily: ";
 
-    while (!(cin >> emp_isMonthly[empCount]) || (emp_isMonthly[empCount] != 0 && emp_isMonthly[empCount] != 1)) {
-       cout << "Invalid input!\n"; 
-       cout << "Please enter 1 for Monthly or 0 for Daily: ";
-       cin.clear();
-       cin.ignore(1000, '\n');
-       emp_isMonthly[empCount] = -1;
-       }
-          
+    cout << "1-Monthly / 0-Daily: ";
+    cin >> emp_isMonthly[empCount];     
+    
     empCount++;
     cout << "Employee added!\n";
 }
@@ -185,6 +161,7 @@ void dashboard() {
 }
 int main() {
     int choice;
+    string input;
 
     do {
         cout << "\n=== AUTOMATED PAYROLL SYSTEM ===\n";
@@ -195,15 +172,12 @@ int main() {
         cout << "0. Exit\n";
         cout << "Choice: ";
         
-        if (!(cin >> choice)){
-           cin.clear();
-           cin.ignore(1000, '\n');
-           choice = -1;
-        }
-        
-        if (choice == 0) {
-           break;
-        }
+        cin >> input; 
+        bool isPureNumber = all_of(input.begin(), input.end(), ::isdigit);
+
+        if (isPureNumber) {
+            choice = stoi(input);
+            }
 
         switch(choice) {
         case 1:
@@ -224,12 +198,14 @@ int main() {
         case 4:
             dashboard();
             break;
+        case 0:
+            cout << "Thank you for using our system!\n";  
+            break;  
         default:
-           cout << "Invalid input!\n";
+           cout << "Invalid Choice!" << endl;
         }
     } 
        while (choice != 0);
-          cout << "Thank you for using our system!\n";
           
     return 0;
 }
