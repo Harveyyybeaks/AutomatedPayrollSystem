@@ -15,8 +15,8 @@ int att_absences[MAX];
 int att_lateMinutes[MAX];
 double att_undertimeHours[MAX];
 double allw_transport[MAX], allw_meal[MAX], allw_incentive[MAX], allw_others[MAX];
-double ded_tax[MAX], ded_sss[MAX], ded_philhealth[MAX], ded_pagibig[MAX];
-double ded_loans[MAX], ded_cashAdvance[MAX], ded_others[MAX];
+double ded_loans[MAX], ded_tax[MAX], ded_sss[MAX], ded_philhealth[MAX], ded_pagibig[MAX];
+double ded_cashAdvance[MAX], ded_others[MAX];
 double pay_gross[MAX], pay_totalDeduction[MAX], pay_totalAllowance[MAX], pay_net[MAX];
 
 int empCount = 0;
@@ -209,9 +209,16 @@ void payslip(int i) {
     cout << "\n===== PAYSLIP =====\n";
     cout << "Name: " << emp_name[i] << endl;
     cout << "Department: " << emp_department[i] << endl;
-    cout << "Gross Pay: " << pay_gross[i] << endl;
+    
+    cout << "\n--- Deductions ---\n";
+    cout << "SSS: " << ded_sss[i] << endl;
+    cout << "PhilHealth: " << ded_philhealth[i] << endl;
+    cout << "Pag-ibig: " << ded_pagibig[i] << endl;
+    cout << "Tax: " << ded_tax[i] << endl;
+    
+    cout << "\nGross Pay: " << pay_gross[i] << endl;
     cout << "Allowances: " << pay_totalAllowance[i] << endl;
-    cout << "Deductions: " << pay_totalDeduction[i] << endl;
+    cout << "Total Deductions: " << pay_totalDeduction[i] << endl;
     cout << "Net Pay: " << pay_net[i] << endl;
 }
 void searchEmployee() {
@@ -225,23 +232,14 @@ void searchEmployee() {
             payslip(i);
             return;
         }
+        else {
+            cout << "Not found!\n";
+        }
     }
-    cout << "Not found!\n";
 }
-void dashboard() {
-    double totalGross = 0, totalDed = 0, totalNet = 0;
-
-    for (int i = 0; i < empCount; i++) {
-        totalGross += pay_gross[i];
-        totalDed += pay_totalDeduction[i];
-        totalNet += pay_net[i];
+void viewEmployees (int i) {
+    cout << emp_id[i] << " | " << emp_name[i] << " | " << emp_department[i] << endl;
     }
-    cout << "\n===== DASHBOARD =====\n";
-    cout << "Total Employees: " << empCount << endl;
-    cout << "Total Gross: " << totalGross << endl;
-    cout << "Total Deduction: " << totalDed << endl;
-    cout << "Total Net: " << totalNet << endl;
-}
 int main() {
     int choice;
     string input;
@@ -251,7 +249,7 @@ int main() {
         cout << "1. Add Employee\n";
         cout << "2. Process Payroll\n";
         cout << "3. Search Employee\n";
-        cout << "4. Dashboard\n";
+        cout << "4. View Employees\n";
         cout << "0. Exit\n";
         cout << "Choice: ";
         
@@ -279,10 +277,14 @@ int main() {
             searchEmployee();
             break;
         case 4:
-            dashboard();
+            cout << "\n==== Employees ====\n";
+            
+            for (int i = 0; i < empCount; i++) {
+            viewEmployees(i);
+            }
             break;
         case 0:
-            cout << "Thank you for using our system!\n";  
+            cout << "\nThank you for using our system!\n";  
             break;  
         default:
            cout << "Invalid Choice!" << endl;
