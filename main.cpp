@@ -6,7 +6,7 @@ using namespace std;
 const int MAX = 100;
 
 int emp_id[MAX];
-string emp_name[MAX], emp_department[MAX], emp_position[MAX], emp_status[MAX], emp_contact[MAX], emp_isMonthlyDaily1, emp_id1, rateInput;
+string emp_name[MAX], emp_department[MAX], emp_position[MAX], emp_status[MAX], emp_contact[MAX], emp_isMonthlyDaily1, emp_id1, rateInput, input;
 double emp_rate[MAX];
 bool emp_isMonthlyDaily[MAX];
 int att_daysWorked[MAX];
@@ -32,15 +32,32 @@ bool isValidText (string text) {
 bool isPureNumber (string text) {
     return all_of(text.begin(), text.end(), ::isdigit);
 }
+bool isValidDecimal(string text) {
+    bool hasDecimal = false;
+    for (char c : text) {
+        if (c == '.') {
+            if (hasDecimal)
+                return false;
+            hasDecimal = true;
+        }
+        else if (!isdigit(c)) {
+            return false;
+        }
+    }
+    return !text.empty();
+}
 void addEmployee() {
     if (empCount >= MAX) return;
-
+    cin.ignore();
     while (true) {
-        cout << "\nEnter Employee ID: ";
-        cin >> emp_id1;
+        cout << "\nEnter ID: ";
+        getline(cin, emp_id1);
         
-       if (isPureNumber) {
-
+       if (emp_id1.empty()) {
+          cout << "ID cannot be empty!\n";
+          continue;
+       }
+       if (isPureNumber(emp_id1)) {
            emp_id[empCount] = stoi(emp_id1);
 
            bool duplicate = false;
@@ -62,62 +79,78 @@ void addEmployee() {
            cout << "Invalid Input! Please enter only numbers.\n";
        }
     }
-    cin.ignore();
     
     while (true) {
         cout << "Full Name: ";
         getline(cin, emp_name[empCount]);
         
-        if (isValidText && !emp_name[empCount].empty()) {
+        if (emp_name[empCount].empty()) {
+            cout << "Full name cannot be empty!\n";
+        }
+        else if (isValidText(emp_name[empCount]) && !emp_name[empCount].empty()) {
             break;
         }
         else {
             cout << "Invalid Input!\n";
-        }
+            }
     }
     
     while (true) {
         cout << "Department: ";
         getline(cin, emp_department[empCount]);
         
-        if (isValidText && !emp_department[empCount].empty()) {
-            break;
+        if (emp_department[empCount].empty()) {
+            cout << "Department cannot be empty!\n";
         }
+        else if (isValidText(emp_department[empCount]) && !emp_department[empCount].empty()) {
+            break;
+        }    
         else {
             cout << "Invalid Input!\n";
-        }
+        }    
     }
+    
     while (true) {
         cout << "Position: ";
         getline(cin, emp_position[empCount]);
         
-        if (isValidText && !emp_position[empCount].empty()) {
+        if (emp_position[empCount].empty()) {
+            cout << "Position cannot be empty!\n";
+        }
+        else if (isValidText(emp_position[empCount]) && !emp_position[empCount].empty()) {
             break;
         }
         else {
             cout << "Invalid Input!\n";
         }
     }
-
+    
     while (true) {
         cout << "Status: ";
         getline(cin, emp_status[empCount]);
         
-        if (isValidText && !emp_status[empCount].empty()) {
+        if (emp_status[empCount].empty()) {
+            cout << "Status cannot be empty!\n";
+        }
+        else if (isValidText(emp_status[empCount]) && !emp_status[empCount].empty()) {
             break;
         }
         else {
             cout << "Invalid Input!\n";
         }
     }
-
+    
     cout << "Contact: ";
     getline(cin, emp_contact[empCount]);
-
+    
     while (true) {
         cout << "Rate: ";
-        cin >> rateInput;
+        getline(cin, rateInput);
         
+        if (rateInput.empty()) {
+            cout << "Rate cannot be empty!\n";
+        }
+        else {
         bool validRate = all_of(rateInput.begin(), rateInput.end(), [](char c) {return isdigit(c) || c == '.';});
         if (validRate) {
             emp_rate[empCount] = stod(rateInput);
@@ -126,17 +159,25 @@ void addEmployee() {
         else {
             cout << "Invalid Input!\n";
         }
+        }
     }
-
+    
     while (true) {
         cout << "1-Monthly / 0-Daily: ";
-        cin >> emp_isMonthlyDaily1; 
+        getline(cin, emp_isMonthlyDaily1); 
         
+        if (emp_isMonthlyDaily1.empty()) {
+            cout << "Monthly/Daily cannot be empty!\n";
+            continue;
+        }
+        else {
+        bool isPureNumber = all_of(emp_isMonthlyDaily1.begin(), emp_isMonthlyDaily1.end(), ::isdigit);
         if (emp_isMonthlyDaily1 == "1" || emp_isMonthlyDaily1 == "0") {
             break;
         }
         else {
             cout << "Invalid Input! Please enter only '1' for Monthly or '0' for Daily.\n";
+        }
         }
         }
     if (isPureNumber) {
@@ -147,11 +188,89 @@ void addEmployee() {
     cout << "Employee added!\n";
 }
 void inputAttendance(int i) {
-    cout << "\nDays Worked: "; cin >> att_daysWorked[i];
-    cout << "Regular Hours: "; cin >> att_regularHours[i];
-    cout << "Overtime Hours: "; cin >> att_overtimeHours[i];
-    cout << "Absences: "; cin >> att_absences[i];
-    cout << "Late Minutes: "; cin >> att_lateMinutes[i];
+    cin.ignore();
+    while (true) {
+    string input;
+        cout << "\nDays Worked: "; 
+        getline(cin, input);
+        
+        if (input.empty()) {
+            cout << "Days worked cannot be empty!\n";
+        }
+        else if (!isPureNumber(input)) {
+            cout << "Invalid Input! Please enter only numbers\n";
+        }
+        else {
+            att_daysWorked[i] = stoi(input);
+            break;
+        }
+    }
+    
+    while (true) {
+    string input1;
+        cout << "Regular Hours: "; 
+        getline(cin, input1);
+        
+        if (input1.empty()) {
+            cout << "Regular hours cannot be empty!\n";
+        }
+        else if (!isValidDecimal(input1)) {
+            cout << "Invalid Input! Please enter only numbers.\n";
+        }
+        else {
+            att_regularHours[i] = stod(input1);
+            break;
+        }
+    }
+    
+    while (true) {
+    string input2;
+        cout << "Overtime Hours: "; 
+        getline(cin, input2);
+        
+        if (input2.empty()) {
+            cout << "Overtime hours cannot be empty!\n";
+        }
+        else if (!isValidDecimal(input2)) {
+            cout << "Invalid Input! Please enter only numbers.\n";
+        }
+        else {
+            att_overtimeHours[i] = stod(input2);
+            break;
+        }
+    }
+    
+    while (true) {
+    string input3;
+        cout << "Absences: ";
+        getline(cin, input3);
+        
+        if (input3.empty()) {
+            cout << "Absences cannot be empty!\n";
+        }
+        else if (!isPureNumber(input3)) {
+            cout << "Invalid Input! Please enter only numbers.\n";
+        }
+        else {
+            att_absences[i] = stoi(input3);
+        }
+    }
+    
+    while (true) {
+    string input4;
+       cout << "Late Minutes: "; 
+       getline(cin, input4);
+       
+       if (input4.empty()) {
+           cout << "Late minutes cannot be empty!\n";
+       }
+       else if (!isValidDecimal(input4)) {
+           cout << "Invalid Input! Please enter only numbers.\n";
+       }
+       else {
+           att_lateMinutes[i] = stod(input4);
+       }
+    }
     cout << "Undertime Hours: "; cin >> att_undertimeHours[i];
 }
 void inputAllowance(int i) {
@@ -223,7 +342,7 @@ void payslip(int i) {
 }
 void searchEmployee() {
     int id;
-    cout << "Enter ID: ";
+    cout << "Enter Employee ID: ";
     cin >> id;
 
     for (int i = 0; i < empCount; i++) {
@@ -278,7 +397,6 @@ int main() {
             break;
         case 4:
             cout << "\n==== Employees ====\n";
-            
             for (int i = 0; i < empCount; i++) {
             viewEmployees(i);
             }
