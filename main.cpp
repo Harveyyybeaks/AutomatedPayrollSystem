@@ -514,13 +514,17 @@ int main() {
         cout << "0. Exit\n";
         cout << "Choice: ";
         
-        cin >> input; 
-        bool isPureNumber = all_of(input.begin(), input.end(), ::isdigit);
-
+        cin.ignore();
+        getline (cin, input);
+        if (input.empty()) {
+            cout << "Input cannot be empty!\n";
+            continue;
+        }    
+        bool isPureNumber = all_of (input.begin(), input.end(), ::isdigit);
         if (isPureNumber) {
-            choice = stoi(input);
-            }
-
+            choice = stoi (input);
+        }
+        
         switch(choice) {
         case 1:
             addEmployee();
