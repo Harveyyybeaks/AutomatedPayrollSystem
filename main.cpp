@@ -48,8 +48,8 @@ bool isValidDecimal(string text) {
     return !text.empty();
 }
 void addEmployee() {
-    if (empCount >= MAX) return;
     cin.ignore();
+    if (empCount >= MAX) return;
     while (true) {
         cout << "\nEnter ID: ";
         getline(cin, emp_id1);
@@ -281,7 +281,6 @@ void inputAttendance(int i) {
         cout << "Time In Recorded: " << att_timeIn[i] << endl;
 }    
 void inputAllowance(int i) {
-    cin.ignore();
     while (true) {
     string input6;
         cout << "\nTransport: "; 
@@ -352,7 +351,6 @@ void inputAllowance(int i) {
     }
 }
 void computeDeductions(int i) {
-    cin.ignore();
     double basic = pay_gross[i];
 
     ded_sss[i] = basic * 0.045;
@@ -459,7 +457,6 @@ void payslip(int i) {
     cout << "Net Pay: " << pay_net[i] << endl;
 }
 void searchEmployee() {
-    cin.ignore();
     int id;
     cout << "Enter Employee ID: ";
     cin >> id;
@@ -478,7 +475,6 @@ void searchEmployee() {
     }
 }
 void viewEmployees (int i) {
-    cin.ignore();
     cout << "ID: " << emp_id[i] << endl;
     cout << "Full Name: " << emp_name[i] << endl;
     cout << "Department: " << emp_department[i] << endl;
