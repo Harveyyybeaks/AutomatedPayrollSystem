@@ -1,19 +1,20 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <ctime>
 using namespace std;
 
 const int MAX = 100;
 
 int emp_id[MAX];
 string emp_name[MAX], emp_department[MAX], emp_position[MAX], emp_status[MAX], emp_contact[MAX], emp_isMonthlyDaily1, emp_id1, rateInput, input;
+string att_timeIn[MAX], att_timeOut[MAX], payroll_date[MAX];
 double emp_rate[MAX];
 bool emp_isMonthlyDaily[MAX];
 int att_daysWorked[MAX];
 double att_regularHours[MAX], att_overtimeHours[MAX];
 int att_absences[MAX];
 int att_lateMinutes[MAX];
-double att_undertimeHours[MAX];
 double allw_transport[MAX], allw_meal[MAX], allw_incentive[MAX], allw_others[MAX];
 double ded_loans[MAX], ded_tax[MAX], ded_sss[MAX], ded_philhealth[MAX], ded_pagibig[MAX];
 double ded_cashAdvance[MAX], ded_others[MAX];
@@ -29,7 +30,7 @@ double computeTax(double salary) {
 bool isValidText (string text) {
     return all_of(text.begin(), text.end(), [](char c) {return isalpha(c) || isspace(c);});
 }
-bool isPureNumber (string text) {
+bool isValidNumber (string text) {
     return all_of(text.begin(), text.end(), ::isdigit);
 }
 bool isValidDecimal(string text) {
@@ -57,7 +58,7 @@ void addEmployee() {
           cout << "ID cannot be empty!\n";
           continue;
        }
-       if (isPureNumber(emp_id1)) {
+       if (isValidNumber(emp_id1)) {
            emp_id[empCount] = stoi(emp_id1);
 
            bool duplicate = false;
@@ -151,8 +152,8 @@ void addEmployee() {
             cout << "Rate cannot be empty!\n";
         }
         else {
-        bool validRate = all_of(rateInput.begin(), rateInput.end(), [](char c) {return isdigit(c) || c == '.';});
-        if (validRate) {
+        bool isValidRate = all_of(rateInput.begin(), rateInput.end(), [](char c) {return isdigit(c) || c == '.';});
+        if (isValidRate) {
             emp_rate[empCount] = stod(rateInput);
             break;
         }
@@ -180,7 +181,7 @@ void addEmployee() {
         }
         }
         }
-    if (isPureNumber) {
+    if (isValidNumber) {
         emp_isMonthlyDaily[empCount] = stoi(emp_isMonthlyDaily1);
     }
     
@@ -197,7 +198,7 @@ void inputAttendance(int i) {
         if (input.empty()) {
             cout << "Days worked cannot be empty!\n";
         }
-        else if (!isPureNumber(input)) {
+        else if (!isValidNumber(input)) {
             cout << "Invalid Input! Please enter only numbers\n";
         }
         else {
@@ -248,11 +249,12 @@ void inputAttendance(int i) {
         if (input3.empty()) {
             cout << "Absences cannot be empty!\n";
         }
-        else if (!isPureNumber(input3)) {
+        else if (!isValidNumber(input3)) {
             cout << "Invalid Input! Please enter only numbers.\n";
         }
         else {
             att_absences[i] = stoi(input3);
+            break;
         }
     }
     
@@ -264,22 +266,93 @@ void inputAttendance(int i) {
        if (input4.empty()) {
            cout << "Late minutes cannot be empty!\n";
        }
-       else if (!isValidDecimal(input4)) {
+       else if (!isValidNumber(input4)) {
            cout << "Invalid Input! Please enter only numbers.\n";
        }
        else {
-           att_lateMinutes[i] = stod(input4);
+           att_lateMinutes[i] = stoi(input4);
+           break;
        }
     }
-    cout << "Undertime Hours: "; cin >> att_undertimeHours[i];
-}
+    
+    time_t now = time(0);
+    att_timeIn[i] = ctime(&now);
+    att_timeIn[i].erase(remove(att_timeIn[i].begin(), att_timeIn[i].end(), '\n'), att_timeIn[i].end());
+        cout << "Time In Recorded: " << att_timeIn[i] << endl;
+}    
 void inputAllowance(int i) {
-    cout << "\nTransport: "; cin >> allw_transport[i];
-    cout << "Meal: "; cin >> allw_meal[i];
-    cout << "Incentive: "; cin >> allw_incentive[i];
-    cout << "Others: "; cin >> allw_others[i];
+    cin.ignore();
+    while (true) {
+    string input6;
+        cout << "\nTransport: "; 
+        getline(cin, input6);
+        
+        if (input6.empty()) {
+            cout << "Transport hours cannot be empty!\n";
+        }
+        else if (!isValidDecimal(input6)) {
+            cout << "Invalid Input! Please enter only numbers.\n";
+        }
+        else {
+            allw_transport[i] = stod(input6);
+            break;
+        }
+    }
+    
+    while (true) {
+    string input7;
+        cout << "Meal: ";
+        getline(cin, input7);
+        
+        if (input7.empty()) {
+            cout << "Meal cannot be empty!\n";
+        }
+        else if (!isValidDecimal(input7)) {
+            cout << "Invalid Input! Please enter only numbers.\n";
+        }
+        else {
+            allw_meal[i] = stod(input7);
+            break;
+        }
+        
+    }
+    
+    while (true) {
+    string input8;
+        cout << "Incentive: "; 
+        getline(cin, input8);
+        
+        if (input8.empty()) {
+            cout << "Incentive cannot be empty!\n";
+        }
+        else if (!isValidDecimal(input8)) {
+            cout << "Invalid Input! Please enter only numbers.\n";
+        }
+        else {
+            allw_incentive[i] = stod(input8);
+            break;
+        }
+    }
+    
+    while (true) {
+    string input9;
+        cout << "Others: "; 
+        getline(cin, input9);
+        
+        if (input9.empty()) {
+            cout << "Others cannot be empty!\n";
+        }
+        else if (!isValidDecimal(input9)) {
+            cout << "Invalid Input! Please enter only numbers.\n";
+        }
+        else {
+            allw_others[i] = stod(input9);
+            break;
+        }
+    }
 }
 void computeDeductions(int i) {
+    cin.ignore();
     double basic = pay_gross[i];
 
     ded_sss[i] = basic * 0.045;
@@ -288,9 +361,56 @@ void computeDeductions(int i) {
 
     ded_tax[i] = computeTax(basic);
 
-    cout << "Loans: "; cin >> ded_loans[i];
-    cout << "Cash Advance: "; cin >> ded_cashAdvance[i];
-    cout << "Other deductions: "; cin >> ded_others[i];
+    while (true) {
+    string input10;
+        cout << "Loans: "; 
+        getline(cin, input10);
+        
+        if (input10.empty()) {
+            cout << "Loans cannot be empty!\n";
+        }
+        else if (!isValidDecimal(input10)) {
+            cout << "Invalid Input! Please enter only numbers.\n";
+        }
+        else {
+            ded_loans[i] = stod(input10);
+            break;
+        }
+    }
+    
+    while (true) {
+    string input11;
+        cout << "Cash Advance: "; 
+        getline(cin, input11);
+        
+        if (input11.empty()) {
+            cout << "Cash advance cannot be empty!\n";
+        }
+        else if (!isValidDecimal(input11)) {
+            cout << "Invalid Input! Please enter only numbers.\n";
+        }
+        else {
+            ded_cashAdvance[i] = stod(input11);
+            break;
+        }
+    }
+    
+    while (true) {
+    string input12;
+        cout << "Other deductions: "; 
+        getline(cin, input12);
+        
+        if (input12.empty()) {
+            cout << "Other deductions cannot be empty!\n";
+        }
+        else if (!isValidDecimal(input12)) {
+            cout << "Invalid Input! Please enter only numbers.\n";
+        }
+        else {
+            ded_others[i] = stod(input12);
+            break;
+        }
+    }
 
     if (ded_loans[i] < 0 || ded_cashAdvance[i] < 0) {
         cout << "Invalid deduction!\n";
@@ -306,9 +426,7 @@ void computePayroll(int i) {
         basic = emp_rate[i] * att_daysWorked[i];
 
     double overtimePay = att_overtimeHours[i] * (emp_rate[i] / 8) * 1.25;
-
     double lateDeduction = (att_lateMinutes[i] / 60.0) * (emp_rate[i] / 8);
-    double undertimeDeduction = att_undertimeHours[i] * (emp_rate[i] / 8);
 
     pay_gross[i] = basic + overtimePay;
 
@@ -320,7 +438,7 @@ void computePayroll(int i) {
     pay_totalDeduction[i] =
         ded_tax[i] + ded_sss[i] + ded_philhealth[i] +
         ded_pagibig[i] + ded_loans[i] + ded_cashAdvance[i] +
-        ded_others[i] + lateDeduction + undertimeDeduction;
+        ded_others[i] + lateDeduction;
 
     pay_net[i] = pay_gross[i] + pay_totalAllowance[i] - pay_totalDeduction[i];
 }
@@ -341,24 +459,52 @@ void payslip(int i) {
     cout << "Net Pay: " << pay_net[i] << endl;
 }
 void searchEmployee() {
+    cin.ignore();
     int id;
     cout << "Enter Employee ID: ";
     cin >> id;
 
+    bool found = false;
     for (int i = 0; i < empCount; i++) {
         if (emp_id[i] == id) {
             cout << "Found: " << emp_name[i] << endl;
             payslip(i);
+            found = true;
             return;
         }
-        else {
-            cout << "Not found!\n";
-        }
+    }
+    if (!found) {
+        cout << "Not found!\n";
     }
 }
 void viewEmployees (int i) {
-    cout << emp_id[i] << " | " << emp_name[i] << " | " << emp_department[i] << endl;
-    }
+    cin.ignore();
+    cout << "ID: " << emp_id[i] << endl;
+    cout << "Full Name: " << emp_name[i] << endl;
+    cout << "Department: " << emp_department[i] << endl;
+    
+    cout << "Time In: ";
+    if (att_timeIn[i].empty()) cout << "NOT SET";
+    else cout << att_timeIn[i];
+    cout << endl;
+    
+    cout << "Time Out: ";
+    if (att_timeOut[i].empty()) cout << "NOT SET";
+    else cout << att_timeOut[i];
+    cout << endl;
+    
+    cout << "Payroll Date: ";
+    if (payroll_date[i].empty()) cout << "NOT SET";
+    else cout << payroll_date[i];
+    cout << endl;
+}
+void setTimeOutAndPayrollDate(int i) {
+    time_t now = time(0);
+
+    att_timeOut[i] = ctime(&now);
+    att_timeOut[i].erase(remove(att_timeOut[i].begin(), att_timeOut[i].end(), '\n'), att_timeOut[i].end());
+    payroll_date[i] = att_timeOut[i];
+}
 int main() {
     int choice;
     string input;
@@ -389,6 +535,7 @@ int main() {
                 inputAttendance(i);
                 inputAllowance(i);
                 computePayroll(i);
+                setTimeOutAndPayrollDate(i);
                 payslip(i);
             }
             break;
